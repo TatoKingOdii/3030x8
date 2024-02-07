@@ -1,0 +1,72 @@
+
+<!--Header Nav bar-->
+<mat-toolbar class="mat-elevation-z4">
+  <div class="nav-content">
+    <button mat-mini-fab (click)="sidenav?.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+  Drink Guide to the End of the World
+  <span class="spacer"></span>
+  <button mat-mini-fab class="nav-content">
+    <mat-icon>person</mat-icon>
+  </button>
+</mat-toolbar>
+<mat-sidenav-container autosize>
+  <mat-sidenav #sidenav mode="side" opened class="app-sidenav">
+    <div *ngIf="authService.isUserAuthenticated(); else login">
+      <span>
+        <a routerLink="/dashboard" routerLinkActive="active">
+          <div class="nav-button">
+            <button mat-button color="primary" class="flex-box">
+                <mat-icon>dashboard</mat-icon>
+                <p>Dashboard</p>
+              </button>
+            </div>
+         </a>
+      </span>
+      <span>
+        <a routerLink="/login" routerLinkActive="active">
+          <div class="nav-button">
+            <button mat-button color="primary" class="flex-box" (click)="authService.deauthenticate()">
+                <mat-icon>logout</mat-icon>
+                <p>Logout</p>
+              </button>
+            </div>
+         </a>
+      </span>
+    </div>
+    <ng-template #login>
+      <span>
+        <a routerLink="/login" routerLinkActive="active">
+          <div class="nav-button">
+            <button mat-button color="primary" class="flex-box">
+                <mat-icon>login</mat-icon>
+                <p>Login</p>
+              </button>
+            </div>
+         </a>
+      </span>
+    </ng-template>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div *ngIf="authService.isUserAuthenticated(); else unauthorized">
+      <div class="content-containers">
+        <app-list class="content-list"
+                  [contentList]="contentService.getAllContent()"
+                  (onContentSelected)="contentService.selectContent($event)"
+                  (onContentDelete)="contentService.deleteContent($event)">
+        </app-list>
+        <app-detail class="content-details"
+                    [selectedContent]="contentService.getSelectedContent()"
+                    (onContentSave)="contentService.updateContent($event)"
+                    (onCancel)="contentService.resetSelectedContent()">
+        </app-detail>
+      </div>
+    </div>
+    <ng-template #unauthorized>
+      <app-unauthorized></app-unauthorized>
+    </ng-template>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
